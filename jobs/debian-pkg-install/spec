@@ -1,0 +1,5 @@
+---
+name: debian-pkg-install
+packages: ["debian-required"]
+templates:
+  bin/pre-start.sh: bin/pre-start

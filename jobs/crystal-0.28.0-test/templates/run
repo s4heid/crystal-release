@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eux
+
+echo "Testing runtime compability..."
+# shellcheck disable=1091
+source "/var/vcap/packages/crystal-0.28.0/bosh/runtime.env"
+crystal run /var/vcap/packages/crystal-0.28.0-test/test.cr

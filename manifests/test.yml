@@ -1,0 +1,33 @@
+---
+name: test
+
+releases:
+- name: crystal
+  version: latest
+  url: file:///tmp/crystal.tgz
+
+stemcells:
+- alias: default
+  os: ubuntu-xenial
+  version: latest
+
+instance_groups:
+- name: crystal
+  azs: [z1]
+  instances: 1
+  jobs:
+  - name: debian-pkg-install
+    release: crystal
+  - name: crystal-0.28.0-test
+    release: crystal
+  vm_type: default
+  stemcell: default
+  persistent_disk: 10240
+  networks:
+  - name: default
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  canary_watch_time: 5000-60000
+  update_watch_time: 5000-60000

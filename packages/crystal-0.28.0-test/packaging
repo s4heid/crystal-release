@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eux
+
+# shellcheck disable=1091
+source "/var/vcap/packages/crystal-0.28.0/bosh/compile.env"
+
+cp test.cr "${BOSH_INSTALL_TARGET}/"
+
+mkdir "${BOSH_INSTALL_TARGET}"/bin
+crystal build -o "${BOSH_INSTALL_TARGET}"/bin/test test.cr
