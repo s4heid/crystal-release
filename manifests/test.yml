@@ -3,8 +3,8 @@ name: test
 
 releases:
 - name: crystal
-  version: latest
-  url: file:///tmp/crystal.tgz
+  version: create
+  url: file://.
 
 stemcells:
 - alias: default
