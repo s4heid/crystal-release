@@ -4,4 +4,4 @@ name: crystal-0.28.0
 files:
 - runtime.env
 - compile.env
-- crystal-0.28.0-1-linux-x86_64.tar.gz
+- crystal/crystal-0.28.0-1-linux-x86_64.tar.gz
