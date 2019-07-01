@@ -1,0 +1,52 @@
+---
+jobs:
+- name: test
+  serial: true
+  plan:
+  - aggregate:
+    - get: crystal-release
+      trigger: true
+    - get: stemcell
+      trigger: true
+      resource: ubuntu-xenial-stemcell
+  - task: integration-test
+    privileged: true
+    file: crystal-release/ci/tasks/run-tests.yml
+
+
+- name: update-crystal
+  serial: true
+  plan:
+  - aggregate:
+    - get: crystal-release
+    - get: crystal
+      trigger: true
+      resource: crystal-binary
+    - get: stemcell
+      resource: ubuntu-xenial-stemcell
+  - task: update-packages
+    file: crystal-release/ci/tasks/update-packages.yml
+    params:
+      BLOBSTORE_ACCESS_KEY_ID: ((blobstore_s3_bucket_access_key_id))
+      BLOBSTORE_SECRET_ACCESS_KEY: ((blobstore_s3_bucket_secret_access_key))
+  - task: test-upgrade
+    privileged: true
+    file: crystal-release/ci/tasks/run-tests.yml
+
+resources:
+- name: crystal-release
+  type: git
+  source:
+    uri: https://github.com/s4heid/crystal-release
+    branch: ci
+
+- name: crystal-binary
+  type: github-release
+  source:
+    owner: crystal-lang
+    repository: crystal
+
+- name: ubuntu-xenial-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-warden-boshlite-ubuntu-xenial-go_agent

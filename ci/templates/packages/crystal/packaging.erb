@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -eu
+
+# https://github.com/cloudfoundry/bosh-linux-stemcell-builder/issues/39
+chmod 1777 /tmp
+
+echo "Installing debian package dependencies..."
+apt-get update
+apt-get -qq -y install libpcre3-dev < /dev/null
+apt-get -qq -y install libevent-dev < /dev/null
+
+echo "Extracting crystal..."
+tar xzf "crystal/<%= crystal_packagename %>-1-linux-x86_64.tar.gz"
+cp -R "<%= crystal_packagename %>-1"/* "${BOSH_INSTALL_TARGET}"
+
+mkdir "${BOSH_INSTALL_TARGET}"/bosh
+cp runtime.env "${BOSH_INSTALL_TARGET}"/bosh/runtime.env
+cp compile.env "${BOSH_INSTALL_TARGET}"/bosh/compile.env

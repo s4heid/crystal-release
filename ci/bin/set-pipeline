@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eu
+
+function is-installed() {
+  if ! command -v "$1" > /dev/null 2>&1 ; then
+    echo "$1 must be installed before running this script!" 1>&2
+    exit 1
+  fi
+}
+
+function main() {
+  is-installed lpass
+  is-installed fly
+
+  lpass sync
+
+  cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+
+  exec fly -t "${CONCOURSE_TARGET:-aws}" set-pipeline \
+    -p crystal-release \
+    -c ci/pipeline.yml \
+    -l <(lpass show --notes "crystal-release concourse credentials") \
+    "$@"
+}
+
+main "$@"

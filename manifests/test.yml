@@ -18,7 +18,7 @@ instance_groups:
   jobs:
   - name: debian-pkg-install
     release: crystal
-  - name: crystal-0.28.0-test
+  - name: ((crystal-test-job))
     release: crystal
   vm_type: default
   stemcell: default

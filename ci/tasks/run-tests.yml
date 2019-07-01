@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: bosh/main-bosh-docker
+
+inputs:
+- name: bumped-crystal-release
+- name: stemcell
+
+run:
+  path: bumped-crystal-release/ci/tasks/run-tests.sh
