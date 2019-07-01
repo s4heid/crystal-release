@@ -13,7 +13,6 @@ jobs:
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
 
-
 - name: update-crystal
   serial: true
   plan:
@@ -24,21 +23,45 @@ jobs:
       resource: crystal-binary
     - get: stemcell
       resource: ubuntu-xenial-stemcell
+    - get: semver
+      params:
+        bump: minor
   - task: update-packages
     file: crystal-release/ci/tasks/update-packages.yml
     params:
       BLOBSTORE_ACCESS_KEY_ID: ((blobstore_s3_bucket_access_key_id))
       BLOBSTORE_SECRET_ACCESS_KEY: ((blobstore_s3_bucket_secret_access_key))
+      GIT_USER_EMAIL: ((maintainer_email))
+      GIT_USER_NAME: ((maintainer_name))
   - task: test-upgrade
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
+  - task: finalize-release
+    file: crystal-release/ci/tasks/finalize.yml
+    params:
+      BLOBSTORE_ACCESS_KEY_ID: ((blobstore_s3_bucket_access_key_id))
+      BLOBSTORE_SECRET_ACCESS_KEY: ((blobstore_s3_bucket_secret_access_key))
+      GIT_USER_EMAIL: ((maintainer_email))
+      GIT_USER_NAME: ((maintainer_name))
+  - aggregate:
+    - put: semver
+      params:
+        file: semver/version
+    - put: crystal-release
+      params:
+        rebase: true
+        repository: finalized-release
+        tag: semver/version
+        tag_prefix: v
+        annotate: version-tag/annotate-msg
 
 resources:
 - name: crystal-release
   type: git
   source:
-    uri: https://github.com/s4heid/crystal-release
-    branch: ci
+    branch: master
+    uri: git@github.com:s4heid/crystal-release
+    private_key: ((github_deploy_key))
 
 - name: crystal-binary
   type: github-release
@@ -50,3 +73,11 @@ resources:
   type: bosh-io-stemcell
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
+
+- name: semver
+  type: semver
+  source:
+    key: version
+    bucket: ((blobstore_s3_bucket_name))
+    access_key_id: ((blobstore_s3_bucket_access_key_id))
+    secret_access_key: ((blobstore_s3_bucket_secret_access_key))
