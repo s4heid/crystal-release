@@ -11,14 +11,7 @@ source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/utils.sh"
 cd bumped-crystal-release
 git clone --quiet ../crystal-release .
 
-cat >> config/private.yml <<EOF
----
-blobstore:
-  provider: s3
-  options:
-    access_key_id: "$BLOBSTORE_ACCESS_KEY_ID"
-    secret_access_key: "$BLOBSTORE_SECRET_ACCESS_KEY"
-EOF
+prepare-credentials
 
 set -x
 
@@ -63,17 +56,12 @@ echo "-----> $(date): Syncing and uploading blobs to S3"
 
 sync-blobs "$crystal_filepath" "$(pwd)"
 
-# TODO: uncomment this
-# bosh upload-blobs
+bosh upload-blobs
 
 
 echo "-----> $(date): Creating git commit"
 
-export GIT_COMMITTER_NAME="Concourse"
-export GIT_COMMITTER_EMAIL="concourse.ci@localhost"
-
-git config --global user.email "${GIT_USER_EMAIL:-ci@localhost}"
-git config --global user.name "${GIT_USER_NAME:-CI Bot}"
+configure-git
 
 git add .
 git --no-pager diff --cached

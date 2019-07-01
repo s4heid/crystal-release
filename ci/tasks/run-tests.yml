@@ -7,8 +7,8 @@ image_resource:
     repository: bosh/main-bosh-docker
 
 inputs:
-- name: bumped-crystal-release
+- name: crystal-release
 - name: stemcell
 
 run:
-  path: bumped-crystal-release/ci/tasks/run-tests.sh
+  path: crystal-release/ci/tasks/run-tests.sh
