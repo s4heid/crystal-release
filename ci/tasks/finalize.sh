@@ -7,7 +7,8 @@ source "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/utils.sh"
 
 cp -rfp ./crystal-release/. finalized-release
 
-commits=$(git -C finalized-release log --oneline origin/master..HEAD | wc -l)
+# TODO (sh) switch to master
+commits=$(git -C finalized-release log --oneline origin/ci..HEAD | wc -l)
 if [[ "$commits" == "0" ]]; then
   :> ../version-tag/tag-name
   :> ../version-tag/annotate-msg
