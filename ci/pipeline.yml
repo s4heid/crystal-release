@@ -58,6 +58,7 @@ jobs:
 resources:
 - name: crystal-release
   type: git
+  icon: github-circle
   source:
     branch: master
     uri: git@github.com:s4heid/crystal-release
@@ -65,17 +66,20 @@ resources:
 
 - name: crystal-binary
   type: github-release
+  icon: github-circle
   source:
     owner: crystal-lang
     repository: crystal
 
 - name: ubuntu-xenial-stemcell
   type: bosh-io-stemcell
+  icon: image
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
 
 - name: semver
   type: semver
+  icon: tag
   source:
     key: version
     bucket: ((blobstore_s3_bucket_name))
