@@ -1,0 +1,39 @@
+name: crystal
+version: 0.1.0
+commit_hash: 814d37a
+uncommitted_changes: false
+jobs:
+- name: crystal-0.29.0-test
+  version: 3a8c35d8bac495f999b3feabfed5c57b57f3bc46d753b5900dc4f24732fbcc31
+  fingerprint: 3a8c35d8bac495f999b3feabfed5c57b57f3bc46d753b5900dc4f24732fbcc31
+  sha1: sha256:27b07957ae3b9cee545a055e2f17855bbe064cedd60e2c009ad20989185ff913
+  packages:
+  - crystal-0.29.0
+  - crystal-0.29.0-test
+- name: debian-pkg-install
+  version: e0d71360aeecce0523f5983b01a0c95ee98d036da067fede81899847fbbe979f
+  fingerprint: e0d71360aeecce0523f5983b01a0c95ee98d036da067fede81899847fbbe979f
+  sha1: sha256:2a42f49069b6657469663c4787df38d6d3c3231d55fb7a407c2c22a234776b5d
+  packages:
+  - debian-required
+packages:
+- name: crystal-0.29.0
+  version: bd7f6ec74c5bd43a1520ca2fe0e9821c29ca2c4e98cbdabeba572355d08d2e52
+  fingerprint: bd7f6ec74c5bd43a1520ca2fe0e9821c29ca2c4e98cbdabeba572355d08d2e52
+  sha1: sha256:b80975b6c360fe84192f1b0f7fbed270ad76aa1b1d533aa4ff82696286ed543f
+  dependencies: []
+- name: crystal-0.29.0-test
+  version: ae09e21143c158d76b102df5144a71b68dcfd394192c2fcc7f7a8eaa21cc81b2
+  fingerprint: ae09e21143c158d76b102df5144a71b68dcfd394192c2fcc7f7a8eaa21cc81b2
+  sha1: sha256:17222b6a7ce7b9dd9588194c864816280c1e5cac1747266b827a87b770b6de31
+  dependencies:
+  - crystal-0.29.0
+- name: debian-required
+  version: 8ca8c99f037ef7d45fb44f473bdedc1151a6e26e7e573cf23599d569b87fce6e
+  fingerprint: 8ca8c99f037ef7d45fb44f473bdedc1151a6e26e7e573cf23599d569b87fce6e
+  sha1: sha256:2435db3703231d6bbf7875ee614f3cd78d9b75c5d409820b84bdb4c6fd6f4b11
+  dependencies: []
+license:
+  version: 2a793631e0786e937593711a8cf2515d743c4f28f742a3dec91e7e5ce70b419f
+  fingerprint: 2a793631e0786e937593711a8cf2515d743c4f28f742a3dec91e7e5ce70b419f
+  sha1: sha256:0a047d929e20d8134bd32e47c97a3c9dd37e4bcbc2e530b8e659243424668c48
