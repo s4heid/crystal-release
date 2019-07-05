@@ -12,7 +12,17 @@ jobs:
   - task: integration-test
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
-
+    on_failure:
+      put: slack-alert
+      params:
+        text: Integration tests for crystal-release failed.
+        attachments:
+        - author_icon: https://github.com/concourse.png
+          author_name: concourse
+          author_link: https://github.com/s4heid/crystal-release
+          title: $BUILD_JOB_NAME/$BUILD_NAME
+          title_link: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+          color: danger
 - name: update-crystal
   serial: true
   plan:
@@ -43,6 +53,31 @@ jobs:
       BLOBSTORE_SECRET_ACCESS_KEY: ((blobstore_s3_bucket_secret_access_key))
       GIT_USER_EMAIL: ((maintainer_email))
       GIT_USER_NAME: ((maintainer_name))
+    on_failure:
+      put: slack-alert
+      params:
+        text: Failed to upgrade crystal to $TEXT_FILE_CONTENT.
+        text_file: version-tag/tag-name
+        attachments:
+        - author_icon: https://github.com/concourse.png
+          author_name: concourse
+          author_link: https://github.com/s4heid/crystal-release
+          title: $BUILD_JOB_NAME/$BUILD_NAME
+          title_link: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+          color: danger
+    on_success:
+      put: slack-alert
+      params:
+        text: Successfully upgraded crystal to $TEXT_FILE_CONTENT.
+        text_file: version-tag/tag-name
+        attachments:
+        - author_icon: https://github.com/concourse.png
+          author_name: concourse
+          author_link: https://github.com/s4heid/crystal-release
+          title: $BUILD_JOB_NAME/$BUILD_NAME
+          title_link: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+          color: good
+
   - in_parallel:
     - put: semver
       params:
@@ -63,20 +98,17 @@ resources:
     branch: master
     uri: git@github.com:s4heid/crystal-release
     private_key: ((github_deploy_key))
-
 - name: crystal-binary
   type: github-release
   icon: github-circle
   source:
     owner: crystal-lang
     repository: crystal
-
 - name: ubuntu-xenial-stemcell
   type: bosh-io-stemcell
   icon: image
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
-
 - name: semver
   type: semver
   icon: tag
@@ -85,3 +117,14 @@ resources:
     bucket: ((blobstore_s3_bucket_name))
     access_key_id: ((blobstore_s3_bucket_access_key_id))
     secret_access_key: ((blobstore_s3_bucket_secret_access_key))
+- name: slack-alert
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((slack_webhook_url))
+
+resource_types:
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
