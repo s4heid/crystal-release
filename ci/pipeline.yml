@@ -13,16 +13,15 @@ jobs:
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
     on_failure:
-      put: slack-alert
+      put: upgrade-github-status
       params:
-        text: Integration tests for crystal-release failed.
-        attachments:
-        - author_icon: https://github.com/concourse.png
-          author_name: concourse
-          author_link: https://github.com/s4heid/crystal-release
-          title: $BUILD_JOB_NAME/$BUILD_NAME
-          title_link: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
-          color: danger
+        commit: crystal-release
+        state: failure
+    on_success:
+      put: upgrade-github-status
+      params:
+        commit: crystal-release
+        state: success
 - name: update-crystal
   serial: true
   plan:
@@ -77,7 +76,6 @@ jobs:
           title: $BUILD_JOB_NAME/$BUILD_NAME
           title_link: $ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
           color: good
-
   - in_parallel:
     - put: semver
       params:
@@ -117,6 +115,14 @@ resources:
     bucket: ((blobstore_s3_bucket_name))
     access_key_id: ((blobstore_s3_bucket_access_key_id))
     secret_access_key: ((blobstore_s3_bucket_secret_access_key))
+- name: upgrade-github-status
+  type: github-status
+  icon: check-outline
+  source:
+    access_token: ((github_access_token))
+    branch: master
+    context: ci/integration-test
+    repository: s4heid/crystal-release
 - name: slack-alert
   type: slack-notification
   icon: slack
@@ -124,6 +130,11 @@ resources:
     url: ((slack_webhook_url))
 
 resource_types:
+- name: github-status
+  type: docker-image
+  source:
+    repository: dpb587/github-status-resource
+    tag: master
 - name: slack-notification
   type: docker-image
   source:
