@@ -1,0 +1,7 @@
+---
+name: crystal-0.30.0
+
+files:
+- runtime.env
+- compile.env
+- crystal/crystal-0.30.0-1-linux-x86_64.tar.gz
