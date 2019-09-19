@@ -20,6 +20,7 @@ function main() {
   exec fly -t "${CONCOURSE_TARGET:-aws}" set-pipeline \
     -p crystal-release \
     -c ci/pipeline.yml \
+    -y worker_tags="[openstack]" \
     -l <(lpass show --notes "crystal-release concourse credentials") \
     "$@"
 }

@@ -6,19 +6,24 @@ jobs:
   - in_parallel:
     - get: crystal-release
       trigger: true
+      tags: ((worker_tags))
     - get: stemcell
       trigger: true
       resource: ubuntu-xenial-stemcell
+      tags: ((worker_tags))
   - task: integration-test
+    tags: ((worker_tags))
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
     on_failure:
       put: upgrade-github-status
+      tags: ((worker_tags))
       params:
         commit: crystal-release
         state: failure
     on_success:
       put: upgrade-github-status
+      tags: ((worker_tags))
       params:
         commit: crystal-release
         state: success
@@ -27,15 +32,20 @@ jobs:
   plan:
   - in_parallel:
     - get: crystal-release
+      tags: ((worker_tags))
     - get: crystal
       trigger: true
       resource: crystal-binary
+      tags: ((worker_tags))
     - get: stemcell
       resource: ubuntu-xenial-stemcell
+      tags: ((worker_tags))
     - get: semver
       params:
         bump: minor
+      tags: ((worker_tags))
   - task: update-packages
+    tags: ((worker_tags))
     file: crystal-release/ci/tasks/update-packages.yml
     params:
       BLOBSTORE_ACCESS_KEY_ID: ((blobstore_s3_bucket_access_key_id))
@@ -43,9 +53,11 @@ jobs:
       GIT_USER_EMAIL: ((maintainer_email))
       GIT_USER_NAME: ((maintainer_name))
   - task: test-upgrade
+    tags: ((worker_tags))
     privileged: true
     file: crystal-release/ci/tasks/run-tests.yml
   - task: finalize-release
+    tags: ((worker_tags))
     file: crystal-release/ci/tasks/finalize.yml
     params:
       BLOBSTORE_ACCESS_KEY_ID: ((blobstore_s3_bucket_access_key_id))
@@ -54,6 +66,7 @@ jobs:
       GIT_USER_NAME: ((maintainer_name))
     on_failure:
       put: slack-alert
+      tags: ((worker_tags))
       params:
         text: Failed to upgrade crystal to $TEXT_FILE_CONTENT.
         text_file: version-tag/tag-name
@@ -66,6 +79,7 @@ jobs:
           color: danger
     on_success:
       put: slack-alert
+      tags: ((worker_tags))
       params:
         text: Successfully upgraded crystal to $TEXT_FILE_CONTENT.
         text_file: version-tag/tag-name
@@ -78,9 +92,11 @@ jobs:
           color: good
   - in_parallel:
     - put: semver
+      tags: ((worker_tags))
       params:
         file: semver/version
     - put: crystal-release
+      tags: ((worker_tags))
       params:
         rebase: true
         repository: finalized-release
@@ -92,6 +108,7 @@ resources:
 - name: crystal-release
   type: git
   icon: github-circle
+  tags: ((worker_tags))
   source:
     branch: master
     uri: git@github.com:s4heid/crystal-release
@@ -99,17 +116,20 @@ resources:
 - name: crystal-binary
   type: github-release
   icon: github-circle
+  tags: ((worker_tags))
   source:
     owner: crystal-lang
     repository: crystal
 - name: ubuntu-xenial-stemcell
   type: bosh-io-stemcell
   icon: image
+  tags: ((worker_tags))
   source:
     name: bosh-warden-boshlite-ubuntu-xenial-go_agent
 - name: semver
   type: semver
   icon: tag
+  tags: ((worker_tags))
   source:
     key: version
     bucket: ((blobstore_s3_bucket_name))
@@ -118,6 +138,7 @@ resources:
 - name: upgrade-github-status
   type: github-status
   icon: check-outline
+  tags: ((worker_tags))
   source:
     access_token: ((github_access_token))
     branch: master
@@ -126,6 +147,7 @@ resources:
 - name: slack-alert
   type: slack-notification
   icon: slack
+  tags: ((worker_tags))
   source:
     url: ((slack_webhook_url))
 
