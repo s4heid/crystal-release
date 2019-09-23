@@ -1,0 +1,11 @@
+---
+name: crystal-0.31.0-test
+
+templates:
+  run: bin/run
+
+packages:
+- crystal-0.31.0
+- crystal-0.31.0-test
+
+properties: {}

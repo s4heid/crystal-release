@@ -3,7 +3,7 @@
 set -eux
 
 # shellcheck disable=1091
-source "/var/vcap/packages/crystal-0.30.1/bosh/compile.env"
+source "/var/vcap/packages/crystal-0.31.0/bosh/compile.env"
 
 cp test.cr "${BOSH_INSTALL_TARGET}/"
 
