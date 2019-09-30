@@ -1,8 +1,0 @@
----
-name: crystal-0.31.0-test
-
-dependencies:
-- crystal-0.31.0
-
-files:
-- test.cr
