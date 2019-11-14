@@ -154,10 +154,12 @@ resources:
 resource_types:
 - name: github-status
   type: docker-image
+  tags: ((worker_tags))
   source:
     repository: dpb587/github-status-resource
     tag: master
 - name: slack-notification
   type: docker-image
+  tags: ((worker_tags))
   source:
     repository: cfcommunity/slack-notification-resource
