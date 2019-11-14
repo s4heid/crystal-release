@@ -9,8 +9,8 @@ cp -rfp ./crystal-release/. finalized-release
 
 commits=$(git -C finalized-release log --oneline origin/master..HEAD | wc -l)
 if [[ "$commits" == "0" ]]; then
-  :> ../version-tag/tag-name
-  :> ../version-tag/annotate-msg
+  :> version-tag/tag-name
+  :> version-tag/annotate-msg
   exit 0
 fi
 
