@@ -11,8 +11,8 @@ apt-get -qq -y install libpcre3-dev < /dev/null
 apt-get -qq -y install libevent-dev < /dev/null
 
 echo "Extracting crystal..."
-tar xzf "crystal/crystal-0.32.0-1-linux-x86_64.tar.gz"
-cp -R "crystal-0.32.0-1"/* "${BOSH_INSTALL_TARGET}"
+tar xzf "crystal/crystal-0.32.1-1-linux-x86_64.tar.gz"
+cp -R "crystal-0.32.1-1"/* "${BOSH_INSTALL_TARGET}"
 
 mkdir "${BOSH_INSTALL_TARGET}"/bosh
 cp runtime.env "${BOSH_INSTALL_TARGET}"/bosh/runtime.env

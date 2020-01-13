@@ -20,14 +20,14 @@ crystal as a runtime and/or compilation dependency.
 ```bash
 $ git clone https://github.com/s4heid/crystal-release.git
 $ cd ~/workspace/your-release
-$ bosh vendor-package crystal-0.32.0 ~/workspace/crystal-release
+$ bosh vendor-package crystal-0.32.1 ~/workspace/crystal-release
 ```
 
 **Step 2:** Add `crystal-*` to the `spec` file of your release:
 
 ```yaml
 dependencies:
-- crystal-0.32.0
+- crystal-0.32.1
 ```
 
 ### Compilation
@@ -36,7 +36,7 @@ To use `crystal-*` for compilation in a [packaging script](https://bosh.io/docs/
 source the `compile.env` script:
 
 ```bash
-source /var/vcap/packages/crystal-0.32.0/bosh/compile.env
+source /var/vcap/packages/crystal-0.32.1/bosh/compile.env
 crystal build ...
 ```
 
@@ -46,7 +46,7 @@ To use `crystal-*` at runtime in a packaging script, source the `runtime.env`
 script:
 
 ```bash
-source /var/vcap/packages/crystal-0.32.0/bosh/runtime.env
+source /var/vcap/packages/crystal-0.32.1/bosh/runtime.env
 crystal run ...
 ```
 
